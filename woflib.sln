@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "woflib", "woflib\woflib.vcxproj", "{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{25041B96-5DAB-4606-95D7-0C420395D159}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		VC-LTL_EnableSupport.props = VC-LTL_EnableSupport.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug-DLL|ARM = Debug-DLL|ARM
+		Debug-DLL|ARM64 = Debug-DLL|ARM64
+		Debug-DLL|x64 = Debug-DLL|x64
+		Debug-DLL|x86 = Debug-DLL|x86
+		Debug-LIB|ARM = Debug-LIB|ARM
+		Debug-LIB|ARM64 = Debug-LIB|ARM64
+		Debug-LIB|x64 = Debug-LIB|x64
+		Debug-LIB|x86 = Debug-LIB|x86
+		Release-DLL|ARM = Release-DLL|ARM
+		Release-DLL|ARM64 = Release-DLL|ARM64
+		Release-DLL|x64 = Release-DLL|x64
+		Release-DLL|x86 = Release-DLL|x86
+		Release-LIB|ARM = Release-LIB|ARM
+		Release-LIB|ARM64 = Release-LIB|ARM64
+		Release-LIB|x64 = Release-LIB|x64
+		Release-LIB|x86 = Release-LIB|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|ARM.ActiveCfg = Debug-DLL|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|ARM.Build.0 = Debug-DLL|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|ARM64.ActiveCfg = Debug-DLL|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|ARM64.Build.0 = Debug-DLL|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|x64.ActiveCfg = Debug-DLL|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|x64.Build.0 = Debug-DLL|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|x86.ActiveCfg = Debug-DLL|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-DLL|x86.Build.0 = Debug-DLL|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|ARM.ActiveCfg = Debug-LIB|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|ARM.Build.0 = Debug-LIB|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|ARM64.ActiveCfg = Debug-LIB|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|ARM64.Build.0 = Debug-LIB|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|x64.ActiveCfg = Debug-LIB|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|x64.Build.0 = Debug-LIB|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|x86.ActiveCfg = Debug-LIB|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Debug-LIB|x86.Build.0 = Debug-LIB|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|ARM.ActiveCfg = Release-DLL|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|ARM.Build.0 = Release-DLL|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|ARM64.ActiveCfg = Release-DLL|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|ARM64.Build.0 = Release-DLL|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|x64.ActiveCfg = Release-DLL|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|x64.Build.0 = Release-DLL|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|x86.ActiveCfg = Release-DLL|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-DLL|x86.Build.0 = Release-DLL|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|ARM.ActiveCfg = Release-LIB|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|ARM.Build.0 = Release-LIB|ARM
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|ARM64.ActiveCfg = Release-LIB|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|ARM64.Build.0 = Release-LIB|ARM64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|x64.ActiveCfg = Release-LIB|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|x64.Build.0 = Release-LIB|x64
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|x86.ActiveCfg = Release-LIB|Win32
+		{B295D3DF-1F97-4403-B7E0-DAC9F3C1DE7A}.Release-LIB|x86.Build.0 = Release-LIB|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {95791DD2-C900-409F-9830-1023E3BF7F42}
+	EndGlobalSection
+EndGlobal
