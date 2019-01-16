@@ -1,4 +1,4 @@
-/************************************************************************
+﻿/************************************************************************
 *                                                                       *
 *   WOFAPI.H                                                            *
 *                                                                       *
@@ -155,11 +155,19 @@ typedef struct _WIM_ENTRY_INFO {
     DWORD Flags;
 } WIM_ENTRY_INFO, *PWIM_ENTRY_INFO;
 
-typedef struct _WIM_EXTERNAL_FILE_INFO {
+typedef struct _WIM_EXTERNAL_FILE_INFO_V0 {
+    LARGE_INTEGER DataSourceId;
+    UCHAR ResourceHash[WIM_PROVIDER_HASH_SIZE];
+} WIM_EXTERNAL_FILE_INFO_V0, *PWIM_EXTERNAL_FILE_INFO_V0;
+
+typedef struct _WIM_EXTERNAL_FILE_INFO_V1 {
     LARGE_INTEGER DataSourceId;
     UCHAR ResourceHash[WIM_PROVIDER_HASH_SIZE];
     ULONG Flags;
-} WIM_EXTERNAL_FILE_INFO, *PWIM_EXTERNAL_FILE_INFO;
+} WIM_EXTERNAL_FILE_INFO_V1, *PWIM_EXTERNAL_FILE_INFO_V1;
+
+typedef WIM_EXTERNAL_FILE_INFO_V1 WIM_EXTERNAL_FILE_INFO;
+typedef PWIM_EXTERNAL_FILE_INFO_V1 PWIM_EXTERNAL_FILE_INFO;
 
 HRESULT
 WINAPI

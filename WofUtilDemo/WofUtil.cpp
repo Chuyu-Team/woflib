@@ -8,6 +8,8 @@
  * DEVELOPER: Mouri_Naruto (Mouri_Naruto AT Outlook.com)
  */
 
+#include "pch.h"
+
 #include <Windows.h>
 #include <winioctl.h>
 
@@ -31,7 +33,7 @@ WofQueryNoSeekLatency
 WofRequestPerfBoost
 WofSetDWordInRegistry
 WofSetDWordInRegistryTest
-WofSetFileDataLocation
+WofSetFileDataLocation - Reversed
 WofShouldCompressBinaries
 WofShouldCompressBinariesEx
 WofStoreEvalData
@@ -83,17 +85,11 @@ HRESULT WINAPI WofGetDriverVersion(
             *WofVersion = OutBuffer.WofVersion;
             return S_OK;
         }
-        else
-        {
-            return __HRESULT_FROM_WIN32(ERROR_INVALID_FUNCTION);
-        }
-    }
-    else
-    {
-        return  __HRESULT_FROM_WIN32(GetLastError());
+
+        return __HRESULT_FROM_WIN32(ERROR_INVALID_FUNCTION);
     }
 
-    return hr;
+    return  __HRESULT_FROM_WIN32(GetLastError());
 }
 
 HRESULT WINAPI WofpDeviceIoControl(
@@ -257,4 +253,104 @@ HRESULT WINAPI WofWimSuspendEntry(
     return hr;
 }
 
+HRESULT WINAPI WofSetFileDataLocation(
+    __in HANDLE FileHandle,
+    __in ULONG Provider,
+    __in PVOID ExternalFileInfo,
+    __in ULONG Length)
+{
+    bool IsInvalidArg = false;
 
+    if (Provider == WOF_PROVIDER_WIM)
+        IsInvalidArg = Length < sizeof(WIM_EXTERNAL_FILE_INFO_V0);
+    else if (Provider == WOF_PROVIDER_FILE)
+        IsInvalidArg = Length < sizeof(WOF_FILE_COMPRESSION_INFO_V0);
+    else
+        IsInvalidArg = true;
+
+    if (IsInvalidArg)
+        return E_INVALIDARG;
+
+    struct
+    {
+        WOF_EXTERNAL_INFO WofInfo;
+        union
+        {
+            WIM_PROVIDER_EXTERNAL_INFO Wim;
+            FILE_PROVIDER_EXTERNAL_INFO File;
+        } ProviderExternalInfo;
+    } InBuffer = { 0 };
+    DWORD lpNumberOfBytesTransferred = sizeof(WOF_EXTERNAL_INFO);
+    OVERLAPPED Overlapped = { 0 };
+
+    InBuffer.WofInfo.Version = WOF_CURRENT_VERSION;
+
+    if (Provider == WOF_PROVIDER_WIM)
+    {
+        InBuffer.WofInfo.Provider = WOF_PROVIDER_WIM;
+
+        PWIM_EXTERNAL_FILE_INFO_V0 pWimExternalFileInfo =
+            reinterpret_cast<PWIM_EXTERNAL_FILE_INFO_V0>(ExternalFileInfo);
+
+        InBuffer.ProviderExternalInfo.Wim.Version =
+            WIM_PROVIDER_CURRENT_VERSION;
+        InBuffer.ProviderExternalInfo.Wim.Flags =
+            0;
+        InBuffer.ProviderExternalInfo.Wim.DataSourceId =
+            pWimExternalFileInfo->DataSourceId;
+        memcpy(
+            InBuffer.ProviderExternalInfo.Wim.ResourceHash,
+            pWimExternalFileInfo->ResourceHash,
+            sizeof(pWimExternalFileInfo->ResourceHash));
+
+        lpNumberOfBytesTransferred += sizeof(WIM_PROVIDER_EXTERNAL_INFO);
+    }
+    else if(Provider == WOF_PROVIDER_FILE)
+    {
+        InBuffer.WofInfo.Provider = WOF_PROVIDER_FILE;
+
+        PWOF_FILE_COMPRESSION_INFO_V0 pFileCompressionInfo =
+            reinterpret_cast<PWOF_FILE_COMPRESSION_INFO_V0>(ExternalFileInfo);
+
+        InBuffer.ProviderExternalInfo.File.Version =
+            FILE_PROVIDER_CURRENT_VERSION;
+        InBuffer.ProviderExternalInfo.File.Algorithm =
+            pFileCompressionInfo->Algorithm;
+        InBuffer.ProviderExternalInfo.File.Flags =
+            0;
+
+        lpNumberOfBytesTransferred += sizeof(FILE_PROVIDER_EXTERNAL_INFO);
+    }
+
+    Overlapped.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (!Overlapped.hEvent)
+        return __HRESULT_FROM_WIN32(ERROR_NO_SYSTEM_RESOURCES);
+
+    bool IsSucceed = DeviceIoControl(
+        FileHandle,
+        FSCTL_SET_EXTERNAL_BACKING,
+        &InBuffer,
+        lpNumberOfBytesTransferred,
+        nullptr,
+        0,
+        &lpNumberOfBytesTransferred,
+        &Overlapped);
+
+    if (!IsSucceed)
+    {
+        if (GetLastError() == ERROR_IO_PENDING)
+        {
+            IsSucceed = GetOverlappedResult(
+                FileHandle,
+                &Overlapped,
+                &lpNumberOfBytesTransferred,
+                TRUE);
+        }
+    }
+
+    HRESULT hr = IsSucceed ? S_OK : __HRESULT_FROM_WIN32(GetLastError());
+
+    CloseHandle(Overlapped.hEvent);
+
+    return hr;
+}
