@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ChuyuWindowsInternalAPI.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="wofapi_sdk.h" />
   </ItemGroup>

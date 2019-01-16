@@ -13,6 +13,8 @@
 #include <Windows.h>
 #include <winioctl.h>
 
+#include "ChuyuWindowsInternalAPI.h"
+
 #include "wofapi_sdk.h"
 
 /*
@@ -41,7 +43,7 @@ WofWimAddEntry
 WofWimEnumFiles
 WofWimRemoveEntry - Reversed
 WofWimSuspendEntry - Reversed
-WofWimUpdateEntry
+WofWimUpdateEntry - Reversed
 WofpBuildNameFromComponents
 WofpDeviceIoControl - Reversed
 WofpEnumFiles
@@ -351,6 +353,78 @@ HRESULT WINAPI WofSetFileDataLocation(
     HRESULT hr = IsSucceed ? S_OK : __HRESULT_FROM_WIN32(GetLastError());
 
     CloseHandle(Overlapped.hEvent);
+
+    return hr;
+}
+
+struct FSCTL_UPDATE_OVERLAY_INPUT_BUFFER
+{
+    WOF_EXTERNAL_INFO WIMExternalInfo;
+    WIM_PROVIDER_UPDATE_OVERLAY_INPUT WIMProviderUpdateOverlayInput;
+};
+
+HRESULT WINAPI WofWimUpdateEntry(
+    __in PCWSTR VolumeName,
+    __in LARGE_INTEGER DataSourceId,
+    __in PCWSTR NewWimPath)
+{
+    if (!VolumeName || !NewWimPath)
+        return E_INVALIDARG;
+
+    UNICODE_STRING NewWimNtPath = { 0 };
+    HRESULT hr = __HRESULT_FROM_WIN32(RtlNtStatusToDosError(
+        RtlDosPathNameToNtPathName_U_WithStatus(
+            const_cast<PWSTR>(NewWimPath),
+            &NewWimNtPath,
+            nullptr,
+            nullptr)));
+    if (SUCCEEDED(hr))
+    {
+        DWORD InBufferSize = NewWimNtPath.Length + 24;
+        FSCTL_UPDATE_OVERLAY_INPUT_BUFFER* InBuffer =
+            reinterpret_cast<FSCTL_UPDATE_OVERLAY_INPUT_BUFFER*>(
+                HeapAlloc(GetProcessHeap(), 0, InBufferSize));
+        if (InBuffer)
+        {
+            HANDLE hVolume = WofpOpenVolumeWithFlagsAndAttributes(
+                VolumeName, TRUE);
+            if (hVolume != INVALID_HANDLE_VALUE)
+            {
+                InBuffer->WIMExternalInfo.Version =
+                    WOF_CURRENT_VERSION;
+                InBuffer->WIMExternalInfo.Provider =
+                    WOF_PROVIDER_WIM;
+                InBuffer->WIMProviderUpdateOverlayInput.DataSourceId =
+                    DataSourceId;
+                InBuffer->WIMProviderUpdateOverlayInput.WimFileNameOffset =
+                    16;
+                InBuffer->WIMProviderUpdateOverlayInput.WimFileNameLength =
+                    NewWimNtPath.Length;
+                memcpy(&InBuffer[1], NewWimNtPath.Buffer, NewWimNtPath.Length);
+
+                DWORD BytesReturned;
+                hr = WofpDeviceIoControl(
+                    hVolume,
+                    FSCTL_UPDATE_OVERLAY,
+                    InBuffer,
+                    InBufferSize,
+                    nullptr,
+                    0,
+                    &BytesReturned);
+
+                CloseHandle(hVolume);
+            }
+            else
+            {
+                hr = __HRESULT_FROM_WIN32(GetLastError());
+            }
+
+
+            HeapFree(GetProcessHeap(), 0, InBuffer);
+        }
+
+        HeapFree(GetProcessHeap(), 0, NewWimNtPath.Buffer);
+    }
 
     return hr;
 }

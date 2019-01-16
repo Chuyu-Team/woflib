@@ -21,6 +21,9 @@
     <ClInclude Include="wofapi_sdk.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ChuyuWindowsInternalAPI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
